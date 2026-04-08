@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngự Tâm Holdings | Nâng tầm giá trị sống</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES: Vàng Kim - Đỏ Đô --- */
+        :root {
+            --bg-dark: #0a0a0c;
+            --bg-card: rgba(25, 20, 20, 0.7);
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-gold: #D4AF37;
+            --accent-red: #8B0000;
+            --gradient-ai: linear-gradient(45deg, var(--accent-gold), var(--accent-red));
+        }
+
+        /* --- GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; }
+        
+        .highlight {
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+           HIỆU ỨNG INTRO: RÈM KÉO NHĂN & LÓE SÁNG CINEMATIC
+           ========================================= */
+        #intro-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 99999; display: flex; justify-content: center; align-items: center;
+            background: #000; overflow: hidden;
+            /* Thêm hiệu ứng mờ dần cho toàn bộ Intro để chuyển cảnh mượt */
+            transition: opacity 1.5s ease-out; 
+        }
+
+        /* CẤU TRÚC RÈM VẢI NHUNG */
+        .curtain {
+            position: absolute; top: 0; width: 50%; height: 100%;
+            /* Hiệu ứng bóng râm phía trên dưới + vân nhung lặp lại */
+            background-image: 
+                linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.9) 100%),
+                repeating-linear-gradient(to right, #050000 0%, #3a0000 4%, #6a0000 8%, #3a0000 12%, #050000 16%);
+            z-index: 2;
+            /* Kỹ thuật dồn nếp gấp: Thu hẹp width sẽ ép các dải gradient sát lại với nhau */
+            transition: width 3.5s cubic-bezier(0.5, 0, 0.1, 1); 
+        }
+        
+        .curtain-left { 
+            left: 0; 
+            border-right: 4px solid var(--accent-gold); 
+            box-shadow: 15px 0 50px rgba(0,0,0,0.9); 
+        }
+        
+        .curtain-right { 
+            right: 0; 
+            border-left: 4px solid var(--accent-gold); 
+            box-shadow: -15px 0 50px rgba(0,0,0,0.9); 
+            /* Lật ngược vân rèm bên phải cho đối xứng */
+            background-image: 
+                linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.9) 100%),
+                repeating-linear-gradient(to left, #050000 0%, #3a0000 4%, #6a0000 8%, #3a0000 12%, #050000 16%);
+        }
+
+        /* LỚP PHỦ LÓE SÁNG CHUYỂN CẢNH */
+        .flash-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #fff 0%, #fffbe6 50%, rgba(212,175,55,0.8) 100%);
+            z-index: 50; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        /* KHU VỰC LOGO CHÍNH GIỮA */
+        .intro-content {
+            position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; padding: 40px; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .intro-logo {
+            width: 280px; height: auto;
+            filter: drop-shadow(0 0 20px rgba(212,175,55,0.6));
+            animation: float-logo 4s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        .click-hint {
+            margin-top: 50px; font-size: 1.1rem; color: var(--accent-gold);
+            letter-spacing: 4px; font-weight: 700; text-transform: uppercase;
+            animation: pulse-text 2s infinite; display: flex; flex-direction: column; align-items: center; gap: 12px;
+            transition: 0.3s;
+        }
+        .click-hint i { font-size: 2.5rem; }
+
+        /* --- HOVER EFFECTS --- */
+        .intro-content:hover .intro-logo { transform: scale(1.1); filter: drop-shadow(0 0 40px rgba(212,175,55,1)); }
+        .intro-content:hover .click-hint { color: #fff; text-shadow: 0 0 15px var(--accent-gold); transform: translateY(-5px); }
+
+        /* =========================================
+           CÁC TRẠNG THÁI KHI CLICK MỞ RÈM
+           ========================================= */
+        
+        /* 1. Rèm bị kéo (Width bị bóp lại, tạo nếp gấp nhăn rúm ở mép) */
+        #intro-screen.opening .curtain { width: 3%; } 
+
+        /* 2. Logo hút về sau */
+        #intro-screen.opening .intro-content {
+            transform: scale(3) translateZ(-500px); /* Phóng to nhưng làm mờ tạo cảm giác đi xuyên qua */
+            opacity: 0; filter: blur(20px);
+        }
+        
+        /* 3. Cú lóe sáng Cinematic */
+        #intro-screen.flashing .flash-overlay {
+            animation: cinematic-flash 2.5s ease-in-out forwards;
+        }
+        @keyframes cinematic-flash {
+            0% { opacity: 0; filter: brightness(1); }
+            30% { opacity: 1; filter: brightness(2); } /* Sáng chói */
+            100% { opacity: 0; filter: brightness(1); } /* Dịu lại */
+        }
+
+        /* 4. Mờ dần toàn bộ Intro Screen */
+        #intro-screen.fading-out { opacity: 0; }
+
+        /* ========================================= */
+
+        /* Thanh Tiến Trình Cuộn */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px;
+            background: var(--gradient-ai); z-index: 9999;
+            box-shadow: 0 0 10px var(--accent-gold); transition: width 0.1s;
+        }
+
+        /* --- HEADER & MENU --- */
+        header {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            z-index: 1000; padding: 15px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.4s;
+        }
+        header:hover { background: rgba(10, 10, 12, 0.98); border-bottom-color: rgba(212, 175, 55, 0.4); }
+
+        .logo { font-size: 24px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: 2px; text-transform: uppercase; }
+        
+        .menu-toggle { display: none; font-size: 28px; color: var(--accent-gold); cursor: pointer; transition: 0.3s; }
+        .menu-toggle:hover { color: var(--accent-red); transform: scale(1.1) rotate(90deg); }
+
+        .nav-links { list-style: none; display: flex; gap: 20px; align-items: center; }
+        .nav-links a {
+            color: var(--text-main); text-decoration: none; font-weight: 500;
+            transition: 0.3s; text-transform: uppercase; font-size: 13px; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -5px; left: 0; background: var(--gradient-ai); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--accent-gold); text-shadow: 0 0 10px rgba(212, 175, 55, 0.8); transform: translateY(-2px); }
+
+        .nav-cta { background: rgba(139, 0, 0, 0.3) !important; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--accent-red); }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--accent-red) !important; color: #fff !important; box-shadow: 0 0 15px var(--accent-red); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; position: relative;
+            background-color: var(--bg-dark); padding: 0 20px; overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, rgba(139, 0, 0, 0.3) 0%, transparent 65%);
+            z-index: -3; animation: bg-pulse 4s infinite alternate;
+        }
+
+        .hero-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -2;
+            transform: rotateX(60deg) translateY(-100px) translateZ(-200px);
+            transform-origin: top center; animation: grid-move 20s linear infinite;
+        }
+
+        .hero-veins {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 120 Q 30 60, 60 60 T 120 0 M60 60 Q 90 90, 120 120' fill='none' stroke='rgba(139, 0, 0, 0.25)' stroke-width='1.5'/%3E%3C/svg%3E");
+            z-index: -1; animation: spin-veins 50s linear infinite, vein-pulse 3s ease-in-out infinite alternate;
+        }
+
+        .orb { position: absolute; border-radius: 50%; filter: blur(20px); z-index: 0; opacity: 0.6; animation: orb-float 10s infinite ease-in-out alternate; }
+        .orb-1 { width: 150px; height: 150px; background: rgba(212, 175, 55, 0.2); top: 20%; left: 15%; animation-duration: 8s; }
+        .orb-2 { width: 250px; height: 250px; background: rgba(139, 0, 0, 0.2); bottom: 10%; right: 10%; animation-duration: 12s; }
+        .orb-3 { width: 100px; height: 100px; background: rgba(212, 175, 55, 0.3); top: 60%; left: 70%; animation-duration: 9s; animation-delay: 2s;}
+
+        .hero-content { z-index: 10; position: relative; }
+
+        .hero h1 { font-size: 4.5rem; margin-bottom: 20px; letter-spacing: 3px; text-transform: uppercase; animation: text-glow 2s ease-in-out infinite alternate, slideDown 1s ease-out; }
+        .hero h2 { font-size: 1.5rem; font-weight: 300; color: var(--text-muted); margin-bottom: 40px; animation: slideUp 1.2s ease-out; }
+
+        .hero-icons { font-size: 3rem; color: var(--accent-gold); display: flex; justify-content: center; gap: 40px; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6)); animation: fadeIn 1.5s ease-out; }
+        .hero-icons i { animation: float 3s ease-in-out infinite; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .hero-icons i:nth-child(2) { animation-delay: 0.5s; }
+        .hero-icons i:nth-child(3) { animation-delay: 1s; }
+        .hero-icons i:hover { color: var(--accent-red); transform: scale(1.4) rotate(360deg); filter: drop-shadow(0 0 20px var(--accent-red)); cursor: pointer; }
+
+        .btn-glow {
+            display: inline-flex; align-items: center; margin-top: 50px; padding: 15px 45px;
+            font-size: 1.2rem; font-weight: 700; color: #fff;
+            background: linear-gradient(45deg, var(--accent-red), var(--accent-gold), var(--accent-red));
+            background-size: 200% auto; border-radius: 30px; text-decoration: none; text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.6); transition: 0.4s; position: relative; overflow: hidden;
+            animation: gradient-shift 3s linear infinite, slideUp 1.5s ease-out;
+        }
+        .btn-glow::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-25deg); animation: shine-sweep 4s infinite;
+        }
+        .btn-glow:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 10px 40px var(--accent-gold); letter-spacing: 2px; }
+
+        /* --- POPUP (MODAL) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            background: rgba(15, 10, 10, 0.95); border: 1px solid var(--accent-gold);
+            padding: 40px; border-radius: 20px; width: 90%; max-width: 450px;
+            text-align: center; position: relative;
+            transform: translateY(-50px) scale(0.8) rotateX(-20deg); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 40px rgba(139, 0, 0, 0.8);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1) rotateX(0deg); }
+        
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .close-modal:hover { color: var(--accent-red); transform: rotate(90deg) scale(1.2); }
+
+        .modal-content h3 { font-size: 1.8rem; margin-bottom: 10px; color: var(--accent-gold); }
+        .modal-content p { color: var(--text-muted); margin-bottom: 25px; }
+
+        .doc-buttons { display: flex; flex-direction: column; gap: 15px; }
+        .doc-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--accent-red);
+            padding: 12px; border-radius: 10px; color: #fff; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-weight: 600; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .doc-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--gradient-ai); z-index: -1; transition: 0.4s; }
+        .doc-btn:hover::before { left: 0; }
+        .doc-btn:hover { border-color: transparent; box-shadow: 0 0 15px var(--accent-gold); transform: translateY(-3px); }
+
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; }
+        .social-icons a { color: var(--accent-gold); font-size: 26px; transition: 0.3s; }
+        .social-icons a:hover { color: var(--accent-red); transform: scale(1.4) rotate(15deg); filter: drop-shadow(0 0 15px var(--accent-red)); }
+
+        /* --- SCROLL REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(60px) scale(0.95); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* --- SECTIONS STANDARD --- */
+        section { padding: 100px 50px; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 50px; text-transform: uppercase; position: relative; }
+        .section-title::after { content: ''; display: block; width: 80px; height: 4px; background: var(--gradient-ai); margin: 15px auto 0; border-radius: 2px; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        section:hover .section-title::after { width: 180px; }
+
+        /* --- CARDS 3D --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; perspective: 1000px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; perspective: 1200px; }
+        
+        .card { 
+            background: var(--bg-card); border: 1px solid rgba(212, 175, 55, 0.1); padding: 30px; 
+            border-radius: 15px; backdrop-filter: blur(10px); 
+            transition: all 0.5s ease; position: relative; overflow: hidden; z-index: 1;
+            transform-style: preserve-3d;
+        }
+        .card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 60%); opacity: 0; transition: 0.5s ease; pointer-events: none; z-index: -1; }
+        
+        .card:hover { 
+            transform: translateY(-15px) rotateX(5deg) rotateY(-5deg) scale(1.03); 
+            border-color: rgba(212, 175, 55, 0.8); 
+            box-shadow: -10px 15px 30px rgba(139, 0, 0, 0.5), inset 0 0 20px rgba(212, 175, 55, 0.1); 
+        }
+        .card:hover::before { opacity: 1; transform: rotate(180deg); }
+        
+        .card i { font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 20px; transition: 0.5s; transform: translateZ(20px); display: inline-block; }
+        .card:hover i { transform: translateZ(40px) rotateY(180deg) scale(1.2); color: #fff; text-shadow: 0 0 20px var(--accent-gold); }
+        
+        .card h3 { margin-bottom: 15px; font-size: 1.4rem; color: #fff; transform: translateZ(10px); }
+        .card ul { list-style: none; padding-top: 10px; transform: translateZ(5px); }
+        .card ul li { margin-bottom: 8px; padding-left: 20px; position: relative; }
+        .card ul li::before { content: '▹'; position: absolute; left: 0; color: var(--accent-red); font-weight: bold; }
+
+        .quote-box { text-align: center; font-size: 1.8rem; font-style: italic; padding: 40px; border-left: 4px solid var(--accent-gold); border-right: 4px solid var(--accent-red); background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(212,175,55,0.05) 50%, rgba(255,255,255,0.02) 100%); margin: 40px 0; border-radius: 10px; transition: 0.5s; }
+        .quote-box:hover { box-shadow: 0 0 40px rgba(212, 175, 55, 0.3); transform: scale(1.02); }
+
+        /* --- FOOTER --- */
+        footer { background: #050505; padding: 60px 50px 20px; border-top: 1px solid rgba(139, 0, 0, 0.4); position: relative; overflow: hidden;}
+        footer::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--gradient-ai); animation: shine-sweep 3s infinite; }
+        
+        .footer-content { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1200px; margin: 0 auto; }
+        .footer-info h2 { font-size: 2rem; margin-bottom: 10px; }
+        .footer-info p { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .footer-info p:hover { color: #fff; transform: translateX(15px); text-shadow: 0 0 10px var(--accent-gold);}
+        .footer-info i { color: var(--accent-gold); }
+        
+        .map-container iframe { width: 100%; height: 300px; border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 10px; filter: invert(90%) hue-rotate(180deg) sepia(20%); transition: 0.5s; }
+        .map-container iframe:hover { border-color: var(--accent-gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); transform: scale(1.02); }
+        
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 14px; color: var(--text-muted); }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float-logo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        @keyframes text-glow { from { text-shadow: 0 0 10px rgba(212,175,55,0.5), 0 0 20px rgba(212,175,55,0.3); } to { text-shadow: 0 0 20px rgba(212,175,55,0.8), 0 0 40px rgba(139,0,0,0.8); } }
+        @keyframes bg-pulse { 0% { opacity: 0.5; } 100% { opacity: 0.9; } }
+        @keyframes spin-veins { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes vein-pulse { 0% { opacity: 0.1; } 100% { opacity: 0.5; } }
+        @keyframes grid-move { 0% { background-position: 0 0; } 100% { background-position: 0 100vh; } }
+        @keyframes orb-float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, -50px) scale(1.2); } }
+        @keyframes gradient-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        @keyframes shine-sweep { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .menu-toggle { display: block; }
+            .nav-links { 
+                position: absolute; top: 60px; right: -100%; width: 100%; height: 100vh;
+                background: rgba(10, 10, 12, 0.98); flex-direction: column; justify-content: flex-start;
+                align-items: center; padding-top: 50px; transition: 0.4s ease-in-out; gap: 30px;
+            }
+            .nav-links.active { right: 0; }
+            .nav-links a { font-size: 18px; }
+            .hero h1 { font-size: 2.5rem; }
+            .btn-glow { padding: 12px 30px; font-size: 1rem; }
+            .grid-2, .footer-content { grid-template-columns: 1fr; }
+            section { padding: 60px 20px; }
+            
+            .intro-logo { width: 200px; } 
+            .click-hint { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        
+        <div class="curtain curtain-left"></div>
+        
+        <div class="curtain curtain-right"></div>
+        
+        <div class="flash-overlay"></div>
+        
+        <div class="intro-content" id="open-curtain-btn">
+            <img src="./ngutamfinal.png" alt="Logo Ngự Tâm" class="intro-logo">
+            
+            <div class="click-hint">
+                <i class="fas fa-fingerprint"></i>
+                <span>CHẠM ĐỂ MỞ KHÁM PHÁ</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="scroll-progress"></div>
+
+    <header>
+        <a href="#home" class="logo highlight">NGỰ TÂM</a>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#about">Giới thiệu</a></li>
+            <li><a href="#vision">Tầm nhìn</a></li>
+            <li><a href="#ecosystem">Hệ sinh thái</a></li>
+            <li><a href="#contact">Liên hệ</a></li>
+            
+            <li><a href="#" id="open-info-btn" class="nav-cta"><i class="fas fa-info-circle"></i> Thông tin Ngự Tâm</a></li>
+            <li><a href="floor.html" class="nav-cta" style="border-color: var(--accent-gold);"><i class="fas fa-rocket"></i> Khám phá ngay</a></li>
+        </ul>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+        <div class="hero-veins"></div>
+        <div class="hero-grid"></div>
+
+        <div class="hero-content">
+            <h1 class="highlight">NGỰ TÂM HOLDINGS</h1>
+            <h2>"Nâng tầm giá trị sống"</h2>
+            <div class="hero-icons">
+                <i class="fas fa-heartbeat"></i>
+                <i class="fas fa-home"></i>
+                <i class="fas fa-hands-holding-circle"></i>
+            </div>
+            
+            <a href="floor.html" class="btn-glow">Khám phá ngay <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></a>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title reveal">Giới thiệu tổng quan</h2>
+        <div class="grid-2 reveal">
+            <div>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">Công ty Cổ phần <strong>Ngự Tâm Holdings</strong> là hệ sinh thái phát triển trong các lĩnh vực:</p>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    Sức khỏe – Thực phẩm sạch – Thảo dược – Trị liệu – Tâm lý – Giáo dục phát triển cảm xúc – Wellness – Công nghệ chăm sóc sức khỏe.
+                </p>
+                <p>Ngự Tâm không chỉ cung cấp sản phẩm hay dịch vụ, mà còn kiến tạo một phong cách sống <strong>lành mạnh – tỉnh thức – bền vững</strong> cho cộng đồng.</p>
+            </div>
+            <div class="quote-box reveal">
+                "Xây người trước khi xây đời."
+                <p style="font-size: 1rem; font-style: normal; margin-top: 15px; color: var(--text-muted);">Chúng tôi tin rằng khi con người khỏe thân – sáng trí – an tâm, họ sẽ tự kiến tạo một cuộc sống bền vững, hạnh phúc và thịnh vượng.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="vision" style="background: rgba(255,255,255,0.02);">
+        <h2 class="section-title reveal">Tầm nhìn & Sứ mệnh</h2>
+        <div class="grid-2">
+            <div class="card reveal" style="transition-delay: 0.1s;">
+                <i class="fas fa-eye"></i>
+                <h3>Tầm nhìn</h3>
+                <p>Trở thành hệ sinh thái chăm sóc con người toàn diện hàng đầu Việt Nam, nơi bất kỳ ai bước vào cũng có cơ hội:</p>
+                <p class="highlight" style="font-size: 1.2rem; margin-top: 15px; font-weight: bold;">Chữa lành – Phát triển – Nâng cao chất lượng sống.</p>
+            </div>
+            <div class="card reveal" style="transition-delay: 0.3s;">
+                <i class="fas fa-rocket"></i>
+                <h3>Sứ mệnh</h3>
+                <ul>
+                    <li>Đưa thảo dược, thực phẩm sạch và chăm sóc sức khỏe trở thành một văn hóa sống.</li>
+                    <li>Xây dựng con người khỏe thân – sáng trí – sạch tâm.</li>
+                    <li>Lan tỏa mô hình sống tỉnh thức – bền vững – nhân văn.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="philosophy">
+        <h2 class="section-title reveal">Triết lý & Giá trị cốt lõi</h2>
+        
+        <h3 class="text-center highlight reveal" style="font-size: 2rem; margin-bottom: 30px;">TÂM – TRÍ – THÂN</h3>
+        <div class="grid-3">
+            <div class="card text-center reveal" style="transition-delay: 0.1s;">
+                <i class="fas fa-om"></i>
+                <h3>TÂM</h3>
+                <p>Sự an ổn nội tâm và nền tảng đạo đức. Làm việc bằng sự chân thành.</p>
+            </div>
+            <div class="card text-center reveal" style="transition-delay: 0.3s;">
+                <i class="fas fa-brain"></i>
+                <h3>TRÍ</h3>
+                <p>Trí tuệ sáng suốt và hiểu biết sâu sắc. Học hỏi và phát triển không ngừng.</p>
+            </div>
+            <div class="card text-center reveal" style="transition-delay: 0.5s;">
+                <i class="fas fa-child"></i>
+                <h3>THÂN</h3>
+                <p>Sức khỏe thể chất và năng lượng sống. Chăm sóc sức khỏe con người.</p>
+            </div>
+        </div>
+
+        <div class="quote-box reveal" style="margin-top: 60px;">
+            "Sạch từ gốc – Tinh từ tâm – Bền từ chuẩn."
+            <p style="font-size: 1.2rem; font-style: normal; margin-top: 15px; color: var(--accent-gold);">Bổ sung thêm 2 giá trị: ĐỨC (Đạo đức nghề nghiệp) & NGHỀ (Chuẩn mực chuyên môn).</p>
+        </div>
+    </section>
+
+    <section id="ecosystem" style="background: rgba(0,0,0,0.3);">
+        <h2 class="section-title reveal">7 Trụ cột Hệ sinh thái</h2>
+        <div class="grid-3">
+            <div class="card reveal"><i class="fas fa-shopping-basket"></i><h3>1. Ngự Mộc Market</h3><p>Chuỗi siêu thị thực phẩm sạch và thảo mộc thương hiệu Ngự Mộc.</p><ul><li>Gà Ngự Mộc, Thực phẩm hữu cơ</li><li>Mục tiêu: Xây dựng chuỗi thực phẩm sạch đáng tin cậy.</li></ul></div>
+            <div class="card reveal"><i class="fas fa-leaf"></i><h3>2. Ngự Tâm Restaurant & Thiền Trà</h3><p>Không gian ẩm thực dưỡng sinh – trà thiền – trải nghiệm an trú.</p><ul><li>Nhà hàng dưỡng sinh, Văn hóa thưởng trà</li><li>Mục tiêu: Nuôi dưỡng thân – tâm – năng lượng sống.</li></ul></div>
+            <div class="card reveal"><i class="fas fa-spa"></i><h3>3. Ngự Tâm Wellness Center</h3><p>Trung tâm chăm sóc sức khỏe và sắc đẹp toàn diện.</p><ul><li>Spa trị liệu, Detox, Trị liệu năng lượng</li><li>Mục tiêu: Khỏe từ bên trong – đẹp từ bên ngoài.</li></ul></div>
+            <div class="card reveal"><i class="fas fa-graduation-cap"></i><h3>4. Ngự Tâm Academy</h3><p>Hệ thống đào tạo và phát triển con người.</p><ul><li>Giáo dục cảm xúc cho gia đình, trẻ em</li><li>Coaching, Trị liệu và Khóa học trực tuyến.</li></ul></div>
+            <div class="card reveal"><i class="fas fa-plane-departure"></i><h3>5. Ngự Tâm Travel & Living</h3><p>Lĩnh vực Bất động sản và nghỉ dưỡng.</p><ul><li>Du lịch nghỉ dưỡng, Booking khách sạn</li><li>Mục tiêu: Kiến tạo không gian sống chất lượng cao.</li></ul></div>
+            <div class="card reveal"><i class="fas fa-car-side"></i><h3>6. Ngự Tâm Mobility & Logistic</h3><p>Hệ thống công nghệ kết nối di chuyển.</p><ul><li>App đặt xe thông minh</li><li>Nền tảng Logistic & Dịch vụ di chuyển.</li></ul></div>
+
+            <div class="card reveal" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 30px; background: linear-gradient(135deg, rgba(30,20,20,0.9), rgba(139,0,0,0.3)); border-color: var(--accent-red);">
+                <i class="fas fa-robot" style="font-size: 4rem; color: var(--accent-red);"></i>
+                <div>
+                    <h3>7. Ngự Tâm Media & Technology</h3>
+                    <p style="margin-bottom: 10px;">Truyền hình, sản xuất nội dung, nền tảng truyền thông và <strong>AI tư vấn đa ngành.</strong></p>
+                    <p class="highlight">Ứng dụng trí tuệ nhân tạo (AI) trong việc tối ưu hóa và kết nối toàn bộ hệ sinh thái số của Ngự Tâm Holdings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="reveal">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h2 class="highlight">NGỰ TÂM HOLDINGS</h2>
+                <p style="font-size: 1.2rem; font-style: italic; margin-bottom: 30px;">"Nâng tầm giá trị sống"</p>
+                
+                <p style="font-weight: 600; color: #fff; margin-bottom: 20px;">
+                    Cam kết: Chuẩn mực – Tử tế – Bền vững.<br>
+                    <span style="font-weight: normal; color: var(--text-muted); font-size: 0.9rem;">Một doanh nghiệp phát triển bền vững là doanh nghiệp mang lại giá trị thật cho con người và xã hội.</span>
+                </p>
+
+                <p><i class="fas fa-globe"></i> Website: Ngutamholdings.vn <em>(Demo)</em></p>
+                <p><i class="fas fa-phone-alt"></i> Hotline: 0369352686</p>
+                <p><i class="fas fa-envelope"></i> Email: Ngutamholding@gmail.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Địa chỉ: Số 45 Ngõ 182, phường Phú Diễn, Hà Nội.</p>
+            </div>
+
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.6559021204043!2d105.7592451!3d21.0464506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454c3ce577141%3A0xb1a1ac92701777bc!2zTmfDsyAxODIgUGjDuiBEaeG7hW4sIFBow7ogRGnhu4VuLCBC4bqvYyBU4burIExpw6ptLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Ngự Tâm Holdings.
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal-content">
+            <i class="fas fa-times close-modal" id="close-modal"></i>
+            <h3>THÔNG TIN DỰ ÁN</h3>
+            <p>Khám phá hồ sơ năng lực và tài liệu chi tiết về hệ sinh thái Ngự Tâm Holdings.</p>
+            
+            <div class="doc-buttons">
+                <a href="#" class="doc-btn"><i class="fas fa-file-powerpoint" style="color: #ff4d4d;"></i> Tải Slide Dự Án (PPT)</a>
+                <a href="#" class="doc-btn"><i class="fas fa-file-pdf" style="color: #ff3333;"></i> Hồ sơ Năng Lực (PDF)</a>
+                <a href="#" class="doc-btn"><i class="fas fa-folder-open" style="color: var(--accent-gold);"></i> Kho Tài liệu Chung</a>
+            </div>
+
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fas fa-comment-dots"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. XỬ LÝ RÈM KÉO (TIMING CINEMATIC)
+        const introScreen = document.getElementById('intro-screen');
+        const openCurtainBtn = document.getElementById('open-curtain-btn');
+
+        openCurtainBtn.addEventListener('click', () => {
+            // Vô hiệu hóa nút tránh click nhiều lần
+            openCurtainBtn.style.pointerEvents = 'none';
+
+            // Bước 1: Kích hoạt kéo rèm dồn vào 2 mép (diễn ra trong 3.5s)
+            introScreen.classList.add('opening');
+            
+            // Bước 2: Đợi 2s (khi rèm đã kéo được hơn một nửa), tung ánh sáng chớp (Flash)
+            setTimeout(() => {
+                introScreen.classList.add('flashing');
+            }, 2000); 
+
+            // Bước 3: Đợi 3s (lúc ánh sáng chớp rực nhất), làm mờ toàn bộ màn hình chờ để lộ dần trang web ở dưới
+            setTimeout(() => {
+                introScreen.classList.add('fading-out');
+            }, 3000);
+
+            // Bước 4: Chờ hoàn tất toàn bộ chu trình (4.5s), gỡ màn hình chờ khỏi hệ thống DOM
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                reveal(); // Nạp hiệu ứng cuộn trang ngay lập tức
+            }, 4500); 
+        });
+
+        // 2. XỬ LÝ THANH CUỘN & SCROLL REVEAL
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", () => {
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            let scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById("scroll-progress").style.width = progress + "%";
+            reveal();
+        });
+        setTimeout(() => { document.querySelectorAll(".reveal")[0].classList.add("active"); }, 500);
+
+        // 3. XỬ LÝ MENU MOBILE
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+        const navItems = navLinks.querySelectorAll('a');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileMenu.querySelector('i');
+            if(navLinks.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if(item.id !== 'open-info-btn') {
+                    navLinks.classList.remove('active');
+                    mobileMenu.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                }
+            });
+        });
+
+        // 4. XỬ LÝ POPUP (MODAL)
+        const modal = document.getElementById('info-modal');
+        const openInfoBtn = document.getElementById('open-info-btn');
+        const closeBtn = document.getElementById('close-modal');
+
+        openInfoBtn.addEventListener('click', (e) => {
+            e.preventDefault(); 
+            modal.classList.add('active');
+            navLinks.classList.remove('active');
+            mobileMenu.querySelector('i').classList.replace('fa-times', 'fa-bars');
+        });
+
+        closeBtn.addEventListener('click', () => { modal.classList.remove('active'); });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) { modal.classList.remove('active'); }
+        });
+    </script>
+</body>
+</html>
