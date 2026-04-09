@@ -2,7 +2,7 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hệ thống Tòa nhà Interactive PRO | Ngự Tâm Holdings</title>
 
     <link
@@ -15,25 +15,28 @@
         /* --- CSS VARIABLES (TÔNG MÀU NGỰ TÂM) --- */
         :root {
             --bg-dark: #050507;
-            --bg-panel: rgba(15, 12, 12, 0.85);
+            --bg-panel: rgba(15, 12, 12, 0.75);
             --accent-gold: #D4AF37;
-            --accent-red: #8B0000;
             --text-main: #e0e0e0;
             --glow-gold: 0 0 20px rgba(212, 175, 55, 0.4);
-            --glow-red: 0 0 20px rgba(139, 0, 0, 0.6);
+            --gradient-ai: linear-gradient(135deg, #D4AF37 0%, #ffdf73 50%, #D4AF37 100%);
         }
 
         /* --- GLOBAL --- */
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
+            background-color: var(--bg-dark);
             background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
                 radial-gradient(circle at top left, rgba(139,0,0,0.15) 0%, transparent 40%),
                 radial-gradient(circle at bottom right, rgba(212,175,55,0.1) 0%, transparent 40%);
+            background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%;
             color: var(--text-main);
             overflow: hidden;
             height: 100vh;
+            width: 100vw;
         }
 
         h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
@@ -52,7 +55,8 @@
         .left {
             width: 35%;
             background: var(--bg-panel);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 16px;
             position: relative;
@@ -60,13 +64,11 @@
             flex-direction: column;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.5);
-            transition: all 0.4s ease;
         }
 
-        /* Header của bảng điều khiển trái */
         .hud-header {
             padding: 15px 20px;
-            background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent);
+            background: linear-gradient(90deg, rgba(212,175,55,0.15), transparent);
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
@@ -76,10 +78,10 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            text-transform: uppercase;
         }
-        .hud-header i { font-size: 16px; animation: blink 2s infinite; }
+        .hud-header i { font-size: 14px; animation: blink 2s infinite; }
 
-        /* Vùng chứa ảnh tòa nhà */
         .image-wrapper {
             flex: 1;
             position: relative;
@@ -90,44 +92,44 @@
             overflow: hidden;
         }
 
-        /* HIỆU ỨNG QUÉT TIA LASER TRÊN TÒA NHÀ */
         .scanner-line {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
+            top: 0; left: 0; width: 100%; height: 2px;
             background: var(--accent-gold);
-            box-shadow: 0 0 15px 5px rgba(212, 175, 55, 0.5);
-            opacity: 0.7;
+            box-shadow: 0 0 20px 8px rgba(212, 175, 55, 0.4);
+            opacity: 0.8;
             z-index: 5;
             pointer-events: none;
-            animation: scan 4s linear infinite;
+            animation: scan 3.5s ease-in-out infinite alternate;
         }
 
         .left img {
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain;
+            object-fit: contain; 
             display: block;
             border-radius: 8px;
             z-index: 2;
             position: relative;
         }
 
-        area { cursor: pointer; }
+        area { cursor: pointer; outline: none; }
 
-        /* Nút hướng dẫn lơ lửng */
         .instruction-badge {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(10, 10, 12, 0.8);
+            background: rgba(5, 5, 7, 0.85);
             backdrop-filter: blur(10px);
             color: var(--accent-gold);
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            font-size: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
             box-shadow: var(--glow-gold);
             pointer-events: none;
             z-index: 10;
@@ -138,17 +140,21 @@
         /* --- CỘT PHẢI (HIỂN THỊ WEB) --- */
         .right {
             width: 65%;
-            position: relative;
             background: var(--bg-panel);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Đổi thành Flexbox để tách thanh điều khiển và iframe */
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Trạng thái Phóng to toàn màn hình (Tràn viền đè lên padding) */
+        /* Trạng thái Phóng to toàn màn hình */
         .right.full {
             position: fixed;
             top: 0; left: 0;
@@ -157,6 +163,77 @@
             border-radius: 0;
             border: none;
             z-index: 9999;
+            background: var(--bg-dark); /* Tránh bị chói khi full màn */
+        }
+
+        /* --- THANH ĐIỀU KHIỂN RIÊNG Ở TRÊN CÙNG (KHÔNG NẰM TRONG IFRAME) --- */
+        .right-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(-90deg, rgba(212,175,55,0.15), transparent);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 10;
+            flex-shrink: 0; /* Đảm bảo thanh này không bị ép nhỏ */
+        }
+
+        .right-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .right-title i { color: var(--accent-gold); }
+
+        .btn-full {
+            position: relative; /* Nút giờ nằm trong flow chuẩn, không trôi dạt nữa */
+            background: rgba(5, 5, 7, 0.85);
+            color: var(--accent-gold);
+            padding: 8px 18px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }
+        
+        .btn-full::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(212,175,55,0.4), transparent);
+            transform: skewX(-25deg); transition: 0s;
+        }
+        
+        .btn-full:hover, .btn-full:active {
+            background: var(--gradient-ai);
+            color: #111;
+            border-color: transparent;
+            box-shadow: var(--glow-gold);
+            transform: translateY(-2px); 
+        }
+        .btn-full:hover::before { animation: shine-sweep 1s; }
+
+        /* --- VÙNG BỌC IFRAME (CHIẾM PHẦN DIỆN TÍCH CÒN LẠI DƯỚI THANH ĐIỀU KHIỂN) --- */
+        .iframe-wrapper {
+            position: relative;
+            flex: 1; /* Tự động dãn đầy chiều cao còn lại */
+            width: 100%;
+            background: #fff; /* Nền trắng cho web/video call bên trong */
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* --- MÀN HÌNH CHỜ LUXURY --- */
@@ -168,110 +245,84 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            background: radial-gradient(circle, rgba(20,20,25,0.9) 0%, var(--bg-dark) 100%);
+            background: radial-gradient(circle, rgba(20,20,25,0.95) 0%, var(--bg-dark) 100%);
             z-index: 10;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease;
         }
         
         .placeholder-icon {
-            font-size: 5rem;
+            font-size: 4.5rem;
             color: transparent;
             background: var(--gradient-ai);
             -webkit-background-clip: text;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(212,175,55,0.5));
-            animation: pulse-icon 2.5s infinite alternate;
+            background-clip: text;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 20px rgba(212,175,55,0.4));
+            animation: pulse-icon 2s infinite alternate;
         }
 
         .placeholder h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            font-size: 1.6rem;
             color: #fff;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
         
         .placeholder p {
-            color: var(--text-muted);
-            font-size: 15px;
-            max-width: 400px;
-            line-height: 1.5;
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            max-width: 80%;
+            line-height: 1.6;
+        }
+
+        /* LOADER KHI IFRAME ĐANG TẢI */
+        .iframe-loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; height: 50px;
+            border: 3px solid rgba(212, 175, 55, 0.1);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 8;
+            display: none;
         }
 
         /* --- KHUNG IFRAME --- */
         iframe {
+            position: absolute;
+            top: 0; left: 0;
             width: 100%;
             height: 100%;
             border: none;
-            opacity: 0; /* Ẩn đi để tạo hiệu ứng Fade In khi load */
+            opacity: 0; 
             transition: opacity 0.8s ease-in-out;
-            background: #fff; /* Nền trắng để web bên trong không bị lỗi màu */
+            z-index: 9;
         }
         iframe.loaded {
             opacity: 1;
         }
 
-        /* --- NÚT ĐIỀU KHIỂN (CYBER BUTTON) --- */
-        .btn-full {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 999;
-            background: rgba(10, 10, 12, 0.7);
-            backdrop-filter: blur(8px);
-            color: var(--accent-gold);
-            padding: 10px 20px;
-            border: 1px solid var(--accent-gold);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-        }
-        
-        /* Hiệu ứng chớp sáng trên nút */
-        .btn-full::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(212,175,55,0.4), transparent);
-            transform: skewX(-25deg); transition: 0s;
-        }
-        
-        .btn-full:hover {
-            background: var(--gradient-ai);
-            color: #fff;
-            border-color: transparent;
-            box-shadow: var(--glow-gold);
-            transform: translateY(-2px);
-        }
-        .btn-full:hover::before {
-            animation: shine-sweep 1s;
-        }
-
         /* --- HIỆU ỨNG ANIMATION --- */
         @keyframes scan {
-            0% { top: 0; opacity: 0; }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.7; }
-            100% { top: 100%; opacity: 0; }
+            0% { top: 5%; opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { top: 95%; opacity: 0; }
         }
         @keyframes float {
             0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, -8px); box-shadow: 0 10px 25px rgba(212,175,55,0.5); }
+            50% { transform: translate(-50%, -10px); box-shadow: 0 15px 30px rgba(212,175,55,0.6); }
         }
         @keyframes pulse-icon {
-            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); }
-            100% { transform: scale(1.1); filter: drop-shadow(0 0 30px rgba(212,175,55,0.8)); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(212,175,55,0.8)); }
         }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 200%; } }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
         /* --- RESPONSIVE MOBILE --- */
         @media(max-width: 768px) {
@@ -282,14 +333,30 @@
             }
             .left {
                 width: 100%;
-                height: 40vh; /* Tòa nhà chiếm 40% màn hình */
+                flex: 0 0 45vh;
             }
             .right {
                 width: 100%;
-                height: calc(60vh - 30px); /* Web chiếm phần còn lại */
+                flex: 1; 
             }
             .hud-header { padding: 10px 15px; font-size: 12px; }
-            .placeholder h2 { font-size: 1.4rem; }
+            .placeholder h2 { font-size: 1.3rem; }
+            .placeholder-icon { font-size: 3.5rem; }
+            
+            .right-controls {
+                padding: 8px 15px;
+            }
+            .right-title { font-size: 11px; }
+            .btn-full {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+            
+            .instruction-badge {
+                bottom: 10px;
+                padding: 8px 15px;
+                font-size: 10px;
+            }
         }
     </style>
   </head>
@@ -299,62 +366,61 @@
 
       <div class="left" id="leftBox">
         <div class="hud-header">
-          <i class="fas fa-circle" style="color: #10b981; font-size: 10px;"></i>
-          NGỰ TÂM TOWER // HỆ THỐNG ĐIỀU KHIỂN
+          <i class="fas fa-circle" style="color: #10b981;"></i>
+          NGỰ TÂM TOWER // KẾT NỐI HỆ THỐNG
         </div>
 
         <div class="image-wrapper">
           <div class="scanner-line"></div>
-          <img id="buildingImg" src="./1.jpeg" usemap="#building">
-          <div class="instruction-badge"><i class="fas fa-crosshairs"></i> CHỌN
-            TẦNG ĐỂ TRUY CẬP</div>
+          <img id="buildingImg" src="../1.jpeg" usemap="#building" alt="Ngu Tam Tower">
+          <div class="instruction-badge"><i class="fas fa-crosshairs"></i> CHẠM VÀO TẦNG ĐỂ TRUY CẬP</div>
         </div>
 
         <map name="building">
-          <area shape="rect" coords="146,680,737,852"
-            onclick="loadFloor('https://a90b-14-248-228-25.ngrok-free.app/ngutam/upload/index.php')"
-            href="https://a90b-14-248-228-25.ngrok-free.app/ngutam/upload/index.php"
-            title="Tầng 1 - Ngự Mộc Market">
-          <area shape="rect" coords="160,660,732,601" onclick="loadFloor('#')"
-            href="#" title="Tầng 2 - Ngự Tâm thiền trà">
-          <area shape="rect" coords="154,524,732,586"
-            onclick="loadFloor('https://tramxonghanhphuc.net')" href="#"
-            title="Tầng 3 - Ngự Tâm Spa">
-          <area shape="rect" coords="155,444,734,506"
-            onclick="loadFloor('https://legatalk.io.vn')" href="#"
-            title="Tầng 4 - Ngự Tâm Academy">
-          <area shape="rect" coords="156,357,733,430" onclick="loadFloor('#')"
-            href="#" title="Tầng 5 - Ngự Tâm Travel & Living">
-          <area shape="rect" coords="156,278,734,333" onclick="loadFloor('#')"
-            href="#" title="Tầng 6 - Ngự Tâm Mobility & Logistic">
-          <area shape="rect" coords="154,173,734,258" onclick="loadFloor('https://a90b-14-248-228-25.ngrok-free.app/course/wordpress/')"
-            href="https://a90b-14-248-228-25.ngrok-free.app/course/wordpress/" title="Tầng 7 - Ngự Tâm Media & Technology">
+          <area shape="rect" coords="146,680,737,852" onclick="loadFloor('https://a90b-14-248-228-25.ngrok-free.app/ngutam/upload/index.php')" href="#" title="Tầng 1 - Ngự Mộc Market">
+          <area shape="rect" coords="160,660,732,601" onclick="loadFloor('#')" href="#" title="Tầng 2 - Ngự Tâm thiền trà">
+          <area shape="rect" coords="154,524,732,586" onclick="loadFloor('https://tramxonghanhphuc.net')" href="#" title="Tầng 3 - Ngự Tâm Spa">
+          <area shape="rect" coords="155,444,734,506" onclick="loadFloor('https://legatalk.io.vn')" href="#" title="Tầng 4 - Ngự Tâm Academy">
+          <area shape="rect" coords="156,357,733,430" onclick="loadFloor('#')" href="#" title="Tầng 5 - Ngự Tâm Travel & Living">
+          <area shape="rect" coords="156,278,734,333" onclick="loadFloor('#')" href="#" title="Tầng 6 - Ngự Tâm Mobility & Logistic">
+          <area shape="rect" coords="154,173,734,258" onclick="loadFloor('https://a90b-14-248-228-25.ngrok-free.app/course/wordpress/')" href="#" title="Tầng 7 - Ngự Tâm Media & Technology">
         </map>
       </div>
 
       <div class="right" id="rightBox">
-
-        <button class="btn-full" id="fullBtn" onclick="toggleFull()">
-          <i class="fas fa-expand"></i> Phóng to
-        </button>
-
-        <div class="placeholder" id="placeholder">
-          <i class="fas fa-network-wired placeholder-icon"></i>
-          <h2>Trung tâm dữ liệu</h2>
-          <p>Hệ thống đã sẵn sàng. Vui lòng tương tác với mô hình tháp bên trái
-            để kích hoạt không gian hiển thị.</p>
+        
+        <div class="right-controls">
+            <div class="right-title"><i class="fas fa-satellite-dish"></i> TRUNG TÂM DỮ LIỆU</div>
+            <button class="btn-full" id="fullBtn" onclick="toggleFull()">
+              <i class="fas fa-expand"></i> Phóng to
+            </button>
         </div>
-        <iframe id="viewer"
-          allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay; web-share"
-          sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
-        </iframe>
+
+        <div class="iframe-wrapper">
+            <div class="iframe-loader" id="iframeLoader"></div>
+
+            <div class="placeholder" id="placeholder">
+            <i class="fas fa-fingerprint placeholder-icon"></i>
+            <h2>Hệ thống chờ lệnh</h2>
+            <p>Vui lòng tương tác với mô hình tháp bên trái để truy xuất không gian hiển thị.</p>
+            </div>
+
+            <iframe id="viewer"
+            allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay; web-share"
+            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
+            </iframe>
+        </div>
+
       </div>
 
     </div>
 
     <script>
-    // 1. HÀM TẢI IFRAME KÈM HIỆU ỨNG FADE IN
+    let isFull = false;
+
     function loadFloor(url) {
+        event.preventDefault();
+
         if(url === "#") {
             alert("Tầng này hiện chưa được thiết lập dữ liệu kết nối!");
             return;
@@ -362,29 +428,27 @@
         
         const placeholder = document.getElementById("placeholder");
         const viewer = document.getElementById("viewer");
+        const loader = document.getElementById("iframeLoader");
         
-        // Mờ màn hình chờ đi
+        if (window.innerWidth <= 768 && !isFull) {
+            toggleFull();
+        }
+
         placeholder.style.opacity = "0";
-        
+        loader.style.display = "block";
+        viewer.classList.remove("loaded");
+
         setTimeout(() => {
-            // Ẩn hẳn màn hình chờ sau khi mờ xong (0.5s)
             placeholder.style.display = "none";
-            
-            // Xóa class loaded cũ, nạp URL mới
-            viewer.classList.remove("loaded");
             viewer.src = url;
-            
-            // Bắt sự kiện iframe load xong thì làm hiện lên (Opacity từ 0 -> 1)
             viewer.onload = function() {
+                loader.style.display = "none";
                 viewer.classList.add("loaded");
             };
         }, 500);
     }
 
-    // 2. HÀM BẬT/TẮT FULLSCREEN CHO KHUNG PHẢI
-    let isFull = false;
     function toggleFull() {
-        const left = document.getElementById("leftBox");
         const right = document.getElementById("rightBox");
         const btn = document.getElementById("fullBtn");
 
@@ -393,16 +457,14 @@
         if(isFull) {
             right.classList.add("full");
             btn.innerHTML = '<i class="fas fa-compress"></i> Thu nhỏ';
+            setTimeout(resizeMap, 500);
         } else {
             right.classList.remove("full");
             btn.innerHTML = '<i class="fas fa-expand"></i> Phóng to';
+            setTimeout(resizeMap, 500);
         }
-        
-        // Chờ CSS transition (0.4s) chạy xong rồi tính lại tọa độ Map
-        setTimeout(resizeMap, 450); 
     }
 
-    // 3. THUẬT TOÁN TÍNH TỌA ĐỘ MAP RESPONSIVE (CHUẨN XÁC)
     function resizeMap() {
         const img = document.getElementById("buildingImg");
         const areas = document.querySelectorAll("area");
@@ -434,10 +496,12 @@
         });
     }
 
-    // Cập nhật tọa độ khi tải trang và khi thay đổi kích thước cửa sổ
-    window.addEventListener("load", resizeMap);
-    window.addEventListener("resize", resizeMap);
-</script>
+    document.getElementById("buildingImg").addEventListener('load', resizeMap);
+    window.addEventListener("resize", () => {
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(resizeMap, 100);
+    });
+    </script>
 
   </body>
 </html>
