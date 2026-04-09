@@ -2,17 +2,14 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hệ thống Tòa nhà Interactive PRO | Ngự Tâm Holdings</title>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CSS VARIABLES (TÔNG MÀU NGỰ TÂM) --- */
+        /* --- CSS VARIABLES --- */
         :root {
             --bg-dark: #050507;
             --bg-panel: rgba(15, 12, 12, 0.75);
@@ -25,6 +22,7 @@
         /* --- GLOBAL --- */
         body {
             margin: 0;
+            padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             background-image: 
@@ -35,8 +33,9 @@
             background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%;
             color: var(--text-main);
             overflow: hidden;
-            height: 100vh;
             width: 100vw;
+            height: 100vh;
+            height: 100dvh; /* Quan trọng cho Mobile Safari/Chrome */
         }
 
         h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
@@ -44,14 +43,14 @@
         /* --- LAYOUT CHÍNH --- */
         .container {
             display: flex;
-            height: 100vh;
-            width: 100vw;
+            height: 100%;
+            width: 100%;
             box-sizing: border-box;
             padding: 15px;
             gap: 15px;
         }
 
-        /* --- CỘT TRÁI (TÒA NHÀ & BẢN ĐỒ) --- */
+        /* --- CỘT TRÁI (TÒA NHÀ) --- */
         .left {
             width: 35%;
             background: var(--bg-panel);
@@ -64,6 +63,7 @@
             flex-direction: column;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
         }
 
         .hud-header {
@@ -78,7 +78,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            text-transform: uppercase;
         }
         .hud-header i { font-size: 14px; animation: blink 2s infinite; }
 
@@ -110,7 +109,6 @@
             display: block;
             border-radius: 8px;
             z-index: 2;
-            position: relative;
         }
 
         area { cursor: pointer; outline: none; }
@@ -128,7 +126,6 @@
             font-size: 12px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            letter-spacing: 1px;
             border: 1px solid rgba(212, 175, 55, 0.5);
             box-shadow: var(--glow-gold);
             pointer-events: none;
@@ -145,58 +142,42 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 16px;
+            position: relative;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            
-            /* Đổi thành Flexbox để tách thanh điều khiển và iframe */
-            display: flex;
-            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Trạng thái Phóng to toàn màn hình */
+        /* TRẠNG THÁI FULLSCREEN (QUAN TRỌNG CHO MOBILE) */
         .right.full {
             position: fixed;
-            top: 0; left: 0;
+            top: 0; 
+            left: 0;
             width: 100vw !important;
             height: 100vh !important;
+            height: 100dvh !important; /* Phủ kín kể cả khi có thanh điều hướng */
             border-radius: 0;
             border: none;
-            z-index: 9999;
-            background: var(--bg-dark); /* Tránh bị chói khi full màn */
+            z-index: 99999;
+            background: #fff; /* Nền trắng để web hiển thị chuẩn màu */
+            padding: 0;
+            margin: 0;
         }
 
-        /* --- THANH ĐIỀU KHIỂN RIÊNG Ở TRÊN CÙNG (KHÔNG NẰM TRONG IFRAME) --- */
-        .right-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: linear-gradient(-90deg, rgba(212,175,55,0.15), transparent);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            z-index: 10;
-            flex-shrink: 0; /* Đảm bảo thanh này không bị ép nhỏ */
-        }
-
-        .right-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .right-title i { color: var(--accent-gold); }
-
+        /* Nút Điều khiển Lơ lửng - Đưa lên CẠNH TRÊN GIỮA để không đè nút Meet/Zoom ở dưới */
         .btn-full {
-            position: relative; /* Nút giờ nằm trong flow chuẩn, không trôi dạt nữa */
-            background: rgba(5, 5, 7, 0.85);
+            position: absolute;
+            top: 15px; /* Nằm sát mép trên */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100000;
+            background: rgba(15, 15, 15, 0.6); /* Nửa trong suốt */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: var(--accent-gold);
-            padding: 8px 18px;
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            border-radius: 8px;
+            padding: 8px 24px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 30px;
             cursor: pointer;
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
@@ -204,39 +185,26 @@
             letter-spacing: 1px;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             gap: 8px;
-            overflow: hidden;
-        }
-        
-        .btn-full::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(212,175,55,0.4), transparent);
-            transform: skewX(-25deg); transition: 0s;
         }
         
         .btn-full:hover, .btn-full:active {
             background: var(--gradient-ai);
             color: #111;
             border-color: transparent;
-            box-shadow: var(--glow-gold);
-            transform: translateY(-2px); 
-        }
-        .btn-full:hover::before { animation: shine-sweep 1s; }
-
-        /* --- VÙNG BỌC IFRAME (CHIẾM PHẦN DIỆN TÍCH CÒN LẠI DƯỚI THANH ĐIỀU KHIỂN) --- */
-        .iframe-wrapper {
-            position: relative;
-            flex: 1; /* Tự động dãn đầy chiều cao còn lại */
-            width: 100%;
-            background: #fff; /* Nền trắng cho web/video call bên trong */
-            overflow: hidden;
-            -webkit-overflow-scrolling: touch;
         }
 
-        /* --- MÀN HÌNH CHỜ LUXURY --- */
+        .right.full .btn-full {
+            background: rgba(0, 0, 0, 0.7); /* Đậm hơn một chút khi full màn hình trắng */
+            border: 1px solid var(--accent-gold);
+            /* Trên mobile có tai thỏ (notch), đẩy xuống 1 chút xíu */
+            top: env(safe-area-inset-top, 15px); 
+        }
+
+        /* --- MÀN HÌNH CHỜ --- */
         .placeholder {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -251,37 +219,35 @@
         }
         
         .placeholder-icon {
-            font-size: 4.5rem;
+            font-size: 4rem;
             color: transparent;
             background: var(--gradient-ai);
             -webkit-background-clip: text;
             background-clip: text;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 0 20px rgba(212,175,55,0.4));
+            margin-bottom: 20px;
             animation: pulse-icon 2s infinite alternate;
         }
 
         .placeholder h2 {
-            margin: 0 0 15px 0;
-            font-size: 1.6rem;
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
             color: #fff;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .placeholder p {
             color: rgba(255,255,255,0.6);
-            font-size: 14px;
+            font-size: 13px;
             max-width: 80%;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        /* LOADER KHI IFRAME ĐANG TẢI */
+        /* LOADER */
         .iframe-loader {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px; height: 50px;
+            width: 40px; height: 40px;
             border: 3px solid rgba(212, 175, 55, 0.1);
             border-top-color: var(--accent-gold);
             border-radius: 50%;
@@ -300,31 +266,20 @@
             opacity: 0; 
             transition: opacity 0.8s ease-in-out;
             z-index: 9;
+            background: #fff; /* Bắt buộc nền trắng để web hiển thị chuẩn */
         }
         iframe.loaded {
             opacity: 1;
         }
 
-        /* --- HIỆU ỨNG ANIMATION --- */
-        @keyframes scan {
-            0% { top: 5%; opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { top: 95%; opacity: 0; }
-        }
-        @keyframes float {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, -10px); box-shadow: 0 15px 30px rgba(212,175,55,0.6); }
-        }
-        @keyframes pulse-icon {
-            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); }
-            100% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(212,175,55,0.8)); }
-        }
+        /* --- ANIMATIONS --- */
+        @keyframes scan { 0% { top: 5%; opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { top: 95%; opacity: 0; } }
+        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); box-shadow: 0 10px 20px rgba(212,175,55,0.5); } }
+        @keyframes pulse-icon { 0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212,175,55,0.2)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(212,175,55,0.8)); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes shine-sweep { 0% { left: -100%; } 100% { left: 200%; } }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        /* --- RESPONSIVE MOBILE --- */
+        /* --- RESPONSIVE MOBILE TỐI ƯU --- */
         @media(max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -333,29 +288,18 @@
             }
             .left {
                 width: 100%;
-                flex: 0 0 45vh;
+                flex: 0 0 40dvh; /* Chiếm 40% màn hình thật trên điện thoại */
             }
             .right {
                 width: 100%;
-                flex: 1; 
-            }
-            .hud-header { padding: 10px 15px; font-size: 12px; }
-            .placeholder h2 { font-size: 1.3rem; }
-            .placeholder-icon { font-size: 3.5rem; }
-            
-            .right-controls {
-                padding: 8px 15px;
-            }
-            .right-title { font-size: 11px; }
-            .btn-full {
-                padding: 6px 12px;
-                font-size: 10px;
+                flex: 1; /* Chiếm phần còn lại */
             }
             
-            .instruction-badge {
-                bottom: 10px;
-                padding: 8px 15px;
-                font-size: 10px;
+            /* Nút thu nhỏ trên Mobile */
+            .right.full .btn-full {
+                top: env(safe-area-inset-top, 20px); /* Tôn trọng vùng tai thỏ của iPhone */
+                padding: 10px 20px;
+                font-size: 11px;
             }
         }
     </style>
@@ -367,13 +311,13 @@
       <div class="left" id="leftBox">
         <div class="hud-header">
           <i class="fas fa-circle" style="color: #10b981;"></i>
-          NGỰ TÂM TOWER // KẾT NỐI HỆ THỐNG
+          NGỰ TÂM TOWER
         </div>
 
         <div class="image-wrapper">
           <div class="scanner-line"></div>
           <img id="buildingImg" src="../1.jpeg" usemap="#building" alt="Ngu Tam Tower">
-          <div class="instruction-badge"><i class="fas fa-crosshairs"></i> CHẠM VÀO TẦNG ĐỂ TRUY CẬP</div>
+          <div class="instruction-badge"><i class="fas fa-crosshairs"></i> CHẠM TẦNG ĐỂ TRUY CẬP</div>
         </div>
 
         <map name="building">
@@ -389,28 +333,22 @@
 
       <div class="right" id="rightBox">
         
-        <div class="right-controls">
-            <div class="right-title"><i class="fas fa-satellite-dish"></i> TRUNG TÂM DỮ LIỆU</div>
-            <button class="btn-full" id="fullBtn" onclick="toggleFull()">
-              <i class="fas fa-expand"></i> Phóng to
-            </button>
+        <button class="btn-full" id="fullBtn" onclick="toggleFull()">
+          <i class="fas fa-expand"></i> Phóng to
+        </button>
+
+        <div class="iframe-loader" id="iframeLoader"></div>
+
+        <div class="placeholder" id="placeholder">
+          <i class="fas fa-fingerprint placeholder-icon"></i>
+          <h2>Hệ thống chờ lệnh</h2>
+          <p>Tương tác với mô hình tháp để truy xuất không gian hiển thị.</p>
         </div>
 
-        <div class="iframe-wrapper">
-            <div class="iframe-loader" id="iframeLoader"></div>
-
-            <div class="placeholder" id="placeholder">
-            <i class="fas fa-fingerprint placeholder-icon"></i>
-            <h2>Hệ thống chờ lệnh</h2>
-            <p>Vui lòng tương tác với mô hình tháp bên trái để truy xuất không gian hiển thị.</p>
-            </div>
-
-            <iframe id="viewer"
-            allow="camera; microphone; display-capture; fullscreen; clipboard-read; clipboard-write; autoplay; web-share"
-            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
-            </iframe>
-        </div>
-
+        <iframe id="viewer"
+          allow="camera *; microphone *; display-capture *; fullscreen *; clipboard-read; clipboard-write; autoplay; web-share"
+          sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
+        </iframe>
       </div>
 
     </div>
@@ -430,6 +368,7 @@
         const viewer = document.getElementById("viewer");
         const loader = document.getElementById("iframeLoader");
         
+        // --- LOGIC: TỰ ĐỘNG FULLSCREEN TRÊN ĐIỆN THOẠI KHI CHỌN TẦNG ---
         if (window.innerWidth <= 768 && !isFull) {
             toggleFull();
         }
@@ -457,11 +396,13 @@
         if(isFull) {
             right.classList.add("full");
             btn.innerHTML = '<i class="fas fa-compress"></i> Thu nhỏ';
-            setTimeout(resizeMap, 500);
+            
+            // Đảm bảo iframe tính toán lại kích thước khi bật full
+            setTimeout(resizeMap, 300);
         } else {
             right.classList.remove("full");
             btn.innerHTML = '<i class="fas fa-expand"></i> Phóng to';
-            setTimeout(resizeMap, 500);
+            setTimeout(resizeMap, 300);
         }
     }
 
@@ -499,7 +440,7 @@
     document.getElementById("buildingImg").addEventListener('load', resizeMap);
     window.addEventListener("resize", () => {
         clearTimeout(window.resizeTimer);
-        window.resizeTimer = setTimeout(resizeMap, 100);
+        window.resizeTimer = setTimeout(resizeMap, 150);
     });
     </script>
 
