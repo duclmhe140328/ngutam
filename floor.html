@@ -35,7 +35,7 @@
             overflow: hidden;
             width: 100vw;
             height: 100vh;
-            height: 100dvh; /* Quan trọng cho Mobile Safari/Chrome */
+            height: 100dvh; /* Quan trọng cho Mobile */
         }
 
         h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
@@ -142,66 +142,89 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 16px;
-            position: relative;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.8);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Dùng Flexbox để tách biệt Header và Iframe */
+            display: flex;
+            flex-direction: column;
         }
 
-        /* TRẠNG THÁI FULLSCREEN (QUAN TRỌNG CHO MOBILE) */
+        /* TRẠNG THÁI FULLSCREEN */
         .right.full {
             position: fixed;
-            top: 0; 
-            left: 0;
+            top: 0; left: 0;
             width: 100vw !important;
             height: 100vh !important;
-            height: 100dvh !important; /* Phủ kín kể cả khi có thanh điều hướng */
+            height: 100dvh !important;
             border-radius: 0;
             border: none;
             z-index: 99999;
-            background: #fff; /* Nền trắng để web hiển thị chuẩn màu */
             padding: 0;
             margin: 0;
         }
 
-        /* Nút Điều khiển Lơ lửng - Đưa lên CẠNH TRÊN GIỮA để không đè nút Meet/Zoom ở dưới */
-        .btn-full {
-            position: absolute;
-            top: 15px; /* Nằm sát mép trên */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100000;
-            background: rgba(15, 15, 15, 0.6); /* Nửa trong suốt */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* --- THANH CÔNG CỤ (NẰM NGOÀI IFRAME) --- */
+        .right-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(10, 10, 12, 0.95);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 10;
+        }
+
+        /* Xử lý khoảng trống tai thỏ (notch) trên iPhone khi Fullscreen */
+        .right.full .right-header {
+            padding-top: max(10px, env(safe-area-inset-top));
+            padding-left: max(20px, env(safe-area-inset-left));
+            padding-right: max(20px, env(safe-area-inset-right));
+        }
+
+        .right-title {
+            font-size: 13px;
+            font-weight: 700;
             color: var(--accent-gold);
-            padding: 8px 24px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 30px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             gap: 8px;
         }
+
+        /* Nút Icon Tròn */
+        .btn-icon {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
         
-        .btn-full:hover, .btn-full:active {
+        .btn-icon:hover, .btn-icon:active {
             background: var(--gradient-ai);
             color: #111;
             border-color: transparent;
+            box-shadow: var(--glow-gold);
+            transform: scale(1.05);
         }
 
-        .right.full .btn-full {
-            background: rgba(0, 0, 0, 0.7); /* Đậm hơn một chút khi full màn hình trắng */
-            border: 1px solid var(--accent-gold);
-            /* Trên mobile có tai thỏ (notch), đẩy xuống 1 chút xíu */
-            top: env(safe-area-inset-top, 15px); 
+        /* --- VÙNG BỌC IFRAME (BÊN DƯỚI THANH CÔNG CỤ) --- */
+        .iframe-container {
+            flex: 1; /* Tự động lấy hết chiều cao còn lại */
+            position: relative;
+            width: 100%;
+            background: #fff; /* Bắt buộc nền trắng cho web */
         }
 
         /* --- MÀN HÌNH CHỜ --- */
@@ -228,19 +251,8 @@
             animation: pulse-icon 2s infinite alternate;
         }
 
-        .placeholder h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.5rem;
-            color: #fff;
-            letter-spacing: 2px;
-        }
-        
-        .placeholder p {
-            color: rgba(255,255,255,0.6);
-            font-size: 13px;
-            max-width: 80%;
-            line-height: 1.5;
-        }
+        .placeholder h2 { margin: 0 0 10px 0; font-size: 1.5rem; color: #fff; letter-spacing: 2px; }
+        .placeholder p { color: rgba(255,255,255,0.6); font-size: 13px; max-width: 80%; line-height: 1.5; }
 
         /* LOADER */
         .iframe-loader {
@@ -266,7 +278,6 @@
             opacity: 0; 
             transition: opacity 0.8s ease-in-out;
             z-index: 9;
-            background: #fff; /* Bắt buộc nền trắng để web hiển thị chuẩn */
         }
         iframe.loaded {
             opacity: 1;
@@ -279,28 +290,15 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        /* --- RESPONSIVE MOBILE TỐI ƯU --- */
+        /* --- RESPONSIVE MOBILE --- */
         @media(max-width: 768px) {
-            .container {
-                flex-direction: column;
-                padding: 10px;
-                gap: 10px;
-            }
-            .left {
-                width: 100%;
-                flex: 0 0 40dvh; /* Chiếm 40% màn hình thật trên điện thoại */
-            }
-            .right {
-                width: 100%;
-                flex: 1; /* Chiếm phần còn lại */
-            }
+            .container { flex-direction: column; padding: 10px; gap: 10px; }
+            .left { width: 100%; flex: 0 0 40dvh; }
+            .right { width: 100%; flex: 1; }
             
-            /* Nút thu nhỏ trên Mobile */
-            .right.full .btn-full {
-                top: env(safe-area-inset-top, 20px); /* Tôn trọng vùng tai thỏ của iPhone */
-                padding: 10px 20px;
-                font-size: 11px;
-            }
+            .right-header { padding: 10px 15px; }
+            .right-title { font-size: 11px; }
+            .btn-icon { width: 32px; height: 32px; font-size: 13px; }
         }
     </style>
   </head>
@@ -310,8 +308,7 @@
 
       <div class="left" id="leftBox">
         <div class="hud-header">
-          <i class="fas fa-circle" style="color: #10b981;"></i>
-          NGỰ TÂM TOWER
+          <i class="fas fa-circle" style="color: #10b981;"></i> NGỰ TÂM TOWER
         </div>
 
         <div class="image-wrapper">
@@ -333,22 +330,28 @@
 
       <div class="right" id="rightBox">
         
-        <button class="btn-full" id="fullBtn" onclick="toggleFull()">
-          <i class="fas fa-expand"></i> Phóng to
-        </button>
-
-        <div class="iframe-loader" id="iframeLoader"></div>
-
-        <div class="placeholder" id="placeholder">
-          <i class="fas fa-fingerprint placeholder-icon"></i>
-          <h2>Hệ thống chờ lệnh</h2>
-          <p>Tương tác với mô hình tháp để truy xuất không gian hiển thị.</p>
+        <div class="right-header">
+            <div class="right-title"><i class="fas fa-satellite-dish"></i> KHÔNG GIAN KẾT NỐI</div>
+            <button class="btn-icon" id="fullBtn" onclick="toggleFull()" title="Phóng to/Thu nhỏ">
+                <i class="fas fa-expand"></i>
+            </button>
         </div>
 
-        <iframe id="viewer"
-          allow="camera *; microphone *; display-capture *; fullscreen *; clipboard-read; clipboard-write; autoplay; web-share"
-          sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
-        </iframe>
+        <div class="iframe-container">
+            <div class="iframe-loader" id="iframeLoader"></div>
+
+            <div class="placeholder" id="placeholder">
+                <i class="fas fa-fingerprint placeholder-icon"></i>
+                <h2>Hệ thống chờ lệnh</h2>
+                <p>Tương tác với mô hình tháp để truy xuất dữ liệu.</p>
+            </div>
+
+            <iframe id="viewer"
+                allow="camera *; microphone *; display-capture *; fullscreen *; clipboard-read; clipboard-write; autoplay; web-share"
+                sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation allow-downloads">
+            </iframe>
+        </div>
+
       </div>
 
     </div>
@@ -368,7 +371,7 @@
         const viewer = document.getElementById("viewer");
         const loader = document.getElementById("iframeLoader");
         
-        // --- LOGIC: TỰ ĐỘNG FULLSCREEN TRÊN ĐIỆN THOẠI KHI CHỌN TẦNG ---
+        // Auto Fullscreen trên Điện thoại
         if (window.innerWidth <= 768 && !isFull) {
             toggleFull();
         }
@@ -395,13 +398,13 @@
 
         if(isFull) {
             right.classList.add("full");
-            btn.innerHTML = '<i class="fas fa-compress"></i> Thu nhỏ';
-            
-            // Đảm bảo iframe tính toán lại kích thước khi bật full
+            // Đổi biểu tượng thành Thu nhỏ
+            btn.innerHTML = '<i class="fas fa-compress"></i>';
             setTimeout(resizeMap, 300);
         } else {
             right.classList.remove("full");
-            btn.innerHTML = '<i class="fas fa-expand"></i> Phóng to';
+            // Đổi biểu tượng thành Phóng to
+            btn.innerHTML = '<i class="fas fa-expand"></i>';
             setTimeout(resizeMap, 300);
         }
     }
@@ -414,7 +417,6 @@
 
         const naturalWidth = img.naturalWidth;
         const naturalHeight = img.naturalHeight;
-
         const currentWidth = img.clientWidth;
         const currentHeight = img.clientHeight;
 
