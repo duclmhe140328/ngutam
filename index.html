@@ -6,7 +6,7 @@
     <title>Ngự Tâm Holdings | Nâng tầm giá trị sống</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         /* --- CSS VARIABLES: Vàng Kim - Đỏ Đô --- */
         :root {
@@ -37,19 +37,16 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 99999; display: flex; justify-content: center; align-items: center;
             background: #000; overflow: hidden;
-            /* Thêm hiệu ứng mờ dần cho toàn bộ Intro để chuyển cảnh mượt */
             transition: opacity 1.5s ease-out; 
         }
 
         /* CẤU TRÚC RÈM VẢI NHUNG */
         .curtain {
             position: absolute; top: 0; width: 50%; height: 100%;
-            /* Hiệu ứng bóng râm phía trên dưới + vân nhung lặp lại */
             background-image: 
                 linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.9) 100%),
                 repeating-linear-gradient(to right, #050000 0%, #3a0000 4%, #6a0000 8%, #3a0000 12%, #050000 16%);
             z-index: 2;
-            /* Kỹ thuật dồn nếp gấp: Thu hẹp width sẽ ép các dải gradient sát lại với nhau */
             transition: width 3.5s cubic-bezier(0.5, 0, 0.1, 1); 
         }
         
@@ -63,7 +60,6 @@
             right: 0; 
             border-left: 4px solid var(--accent-gold); 
             box-shadow: -15px 0 50px rgba(0,0,0,0.9); 
-            /* Lật ngược vân rèm bên phải cho đối xứng */
             background-image: 
                 linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.9) 100%),
                 repeating-linear-gradient(to left, #050000 0%, #3a0000 4%, #6a0000 8%, #3a0000 12%, #050000 16%);
@@ -95,39 +91,26 @@
             animation: pulse-text 2s infinite; display: flex; flex-direction: column; align-items: center; gap: 12px;
             transition: 0.3s;
         }
+        
         .click-hint i { font-size: 2.5rem; }
 
         /* --- HOVER EFFECTS --- */
         .intro-content:hover .intro-logo { transform: scale(1.1); filter: drop-shadow(0 0 40px rgba(212,175,55,1)); }
         .intro-content:hover .click-hint { color: #fff; text-shadow: 0 0 15px var(--accent-gold); transform: translateY(-5px); }
 
-        /* =========================================
-           CÁC TRẠNG THÁI KHI CLICK MỞ RÈM
-           ========================================= */
-        
-        /* 1. Rèm bị kéo (Width bị bóp lại, tạo nếp gấp nhăn rúm ở mép) */
+        /* CÁC TRẠNG THÁI KHI CLICK MỞ RÈM */
         #intro-screen.opening .curtain { width: 3%; } 
-
-        /* 2. Logo hút về sau */
         #intro-screen.opening .intro-content {
-            transform: scale(3) translateZ(-500px); /* Phóng to nhưng làm mờ tạo cảm giác đi xuyên qua */
+            transform: scale(3) translateZ(-500px);
             opacity: 0; filter: blur(20px);
         }
-        
-        /* 3. Cú lóe sáng Cinematic */
-        #intro-screen.flashing .flash-overlay {
-            animation: cinematic-flash 2.5s ease-in-out forwards;
-        }
+        #intro-screen.flashing .flash-overlay { animation: cinematic-flash 2.5s ease-in-out forwards; }
         @keyframes cinematic-flash {
             0% { opacity: 0; filter: brightness(1); }
-            30% { opacity: 1; filter: brightness(2); } /* Sáng chói */
-            100% { opacity: 0; filter: brightness(1); } /* Dịu lại */
+            30% { opacity: 1; filter: brightness(2); }
+            100% { opacity: 0; filter: brightness(1); }
         }
-
-        /* 4. Mờ dần toàn bộ Intro Screen */
         #intro-screen.fading-out { opacity: 0; }
-
-        /* ========================================= */
 
         /* Thanh Tiến Trình Cuộn */
         #scroll-progress {
@@ -204,7 +187,6 @@
         .orb-3 { width: 100px; height: 100px; background: rgba(212, 175, 55, 0.3); top: 60%; left: 70%; animation-duration: 9s; animation-delay: 2s;}
 
         .hero-content { z-index: 10; position: relative; }
-
         .hero h1 { font-size: 4.5rem; margin-bottom: 20px; letter-spacing: 3px; text-transform: uppercase; animation: text-glow 2s ease-in-out infinite alternate, slideDown 1s ease-out; }
         .hero h2 { font-size: 1.5rem; font-weight: 300; color: var(--text-muted); margin-bottom: 40px; animation: slideUp 1.2s ease-out; }
 
@@ -323,6 +305,49 @@
         
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 14px; color: var(--text-muted); }
 
+        /* --- CHATBOT CSS --- */
+        .chatbot-toggler {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--gradient-ai); color: #fff; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 28px;
+            cursor: pointer; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); z-index: 1000;
+            transition: 0.3s; animation: float 3s ease-in-out infinite;
+        }
+        .chatbot-toggler:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(139, 0, 0, 0.8); }
+
+        .chatbot-window {
+            position: fixed; bottom: 100px; right: 30px; width: 350px;
+            background: var(--bg-card); backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px;
+            overflow: hidden; z-index: 1000; opacity: 0; pointer-events: none;
+            transform: translateY(20px) scale(0.9); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+        .chatbot-window.active { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+
+        .chat-header {
+            background: linear-gradient(90deg, rgba(139, 0, 0, 0.8), rgba(212, 175, 55, 0.6));
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--accent-gold);
+        }
+        .chat-header h3 { font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .close-chat { cursor: pointer; color: #fff; transition: 0.3s; }
+        .close-chat:hover { color: var(--text-main); transform: rotate(90deg); }
+
+        .chat-body { height: 350px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-body::-webkit-scrollbar { width: 5px; }
+        .chat-body::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 5px; }
+
+        .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; }
+        .ai-message { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 175, 55, 0.2); align-self: flex-start; border-bottom-left-radius: 0; }
+        .user-message { background: rgba(139, 0, 0, 0.5); border: 1px solid var(--accent-red); align-self: flex-end; border-bottom-right-radius: 0; }
+
+        .chat-footer { padding: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(212, 175, 55, 0.3); padding: 10px 15px; border-radius: 20px; color: #fff; outline: none; transition: 0.3s; }
+        .chat-footer input:focus { border-color: var(--accent-gold); }
+        .chat-footer button { background: var(--gradient-ai); border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; cursor: pointer; transition: 0.3s; }
+        .chat-footer button:hover { transform: scale(1.1); }
+
         /* --- ANIMATIONS --- */
         @keyframes float-logo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes pulse-text { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
@@ -337,6 +362,7 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
@@ -353,28 +379,21 @@
             .btn-glow { padding: 12px 30px; font-size: 1rem; }
             .grid-2, .footer-content { grid-template-columns: 1fr; }
             section { padding: 60px 20px; }
-            
             .intro-logo { width: 200px; } 
             .click-hint { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-
     <div id="intro-screen">
-        
         <div class="curtain curtain-left"></div>
-        
         <div class="curtain curtain-right"></div>
-        
         <div class="flash-overlay"></div>
-        
         <div class="intro-content" id="open-curtain-btn">
             <img src="./ngutamfinal.png" alt="Logo Ngự Tâm" class="intro-logo">
-            
             <div class="click-hint">
                 <i class="fas fa-fingerprint"></i>
-                <span>CHẠM ĐỂ KHÁM PHÁ</span>
+                <span>CHẠM ĐỂ MỞ KHÁM PHÁ</span>
             </div>
         </div>
     </div>
@@ -383,17 +402,14 @@
 
     <header>
         <a href="#home" class="logo highlight">NGỰ TÂM</a>
-        
         <div class="menu-toggle" id="mobile-menu">
             <i class="fas fa-bars"></i>
         </div>
-
         <ul class="nav-links" id="nav-links">
             <li><a href="#about">Giới thiệu</a></li>
             <li><a href="#vision">Tầm nhìn</a></li>
             <li><a href="#ecosystem">Hệ sinh thái</a></li>
             <li><a href="#contact">Liên hệ</a></li>
-            
             <li><a href="#" id="open-info-btn" class="nav-cta"><i class="fas fa-info-circle"></i> Thông tin Ngự Tâm</a></li>
             <li><a href="floor.html" class="nav-cta" style="border-color: var(--accent-gold);"><i class="fas fa-rocket"></i> Khám phá ngay</a></li>
         </ul>
@@ -403,10 +419,8 @@
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
-
         <div class="hero-veins"></div>
         <div class="hero-grid"></div>
-
         <div class="hero-content">
             <h1 class="highlight">NGỰ TÂM HOLDINGS</h1>
             <h2>"Nâng tầm giá trị sống"</h2>
@@ -415,7 +429,6 @@
                 <i class="fas fa-home"></i>
                 <i class="fas fa-hands-holding-circle"></i>
             </div>
-            
             <a href="floor.html" class="btn-glow">Khám phá ngay <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></a>
         </div>
     </section>
@@ -460,7 +473,6 @@
 
     <section id="philosophy">
         <h2 class="section-title reveal">Triết lý & Giá trị cốt lõi</h2>
-        
         <h3 class="text-center highlight reveal" style="font-size: 2rem; margin-bottom: 30px;">TÂM – TRÍ – THÂN</h3>
         <div class="grid-3">
             <div class="card text-center reveal" style="transition-delay: 0.1s;">
@@ -479,7 +491,6 @@
                 <p>Sức khỏe thể chất và năng lượng sống. Chăm sóc sức khỏe con người.</p>
             </div>
         </div>
-
         <div class="quote-box reveal" style="margin-top: 60px;">
             "Sạch từ gốc – Tinh từ tâm – Bền từ chuẩn."
             <p style="font-size: 1.2rem; font-style: normal; margin-top: 15px; color: var(--accent-gold);">Bổ sung thêm 2 giá trị: ĐỨC (Đạo đức nghề nghiệp) & NGHỀ (Chuẩn mực chuyên môn).</p>
@@ -512,20 +523,17 @@
             <div class="footer-info">
                 <h2 class="highlight">NGỰ TÂM HOLDINGS</h2>
                 <p style="font-size: 1.2rem; font-style: italic; margin-bottom: 30px;">"Nâng tầm giá trị sống"</p>
-                
                 <p style="font-weight: 600; color: #fff; margin-bottom: 20px;">
                     Cam kết: Chuẩn mực – Tử tế – Bền vững.<br>
                     <span style="font-weight: normal; color: var(--text-muted); font-size: 0.9rem;">Một doanh nghiệp phát triển bền vững là doanh nghiệp mang lại giá trị thật cho con người và xã hội.</span>
                 </p>
-
                 <p><i class="fas fa-globe"></i> Website: Ngutamholdings.vn <em>(Demo)</em></p>
                 <p><i class="fas fa-phone-alt"></i> Hotline: 0369352686</p>
                 <p><i class="fas fa-envelope"></i> Email: Ngutamholding@gmail.com</p>
                 <p><i class="fas fa-map-marker-alt"></i> Địa chỉ: Số 45 Ngõ 182, phường Phú Diễn, Hà Nội.</p>
             </div>
-
             <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.6559021204043!2d105.7592451!3d21.0464506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454c3ce577141%3A0xb1a1ac92701777bc!2zTmfDsyAxODIgUGjDuiBEaeG7hW4sIFBow7ogRGnhu4VuLCBC4bqvYyBU4burIExpw6ptLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.6559021204043!2d105.7592451!3d21.0464506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454c3ce577141%3A0xb1a1ac92701777bc!2zTmfDsyAxODIgUGjDuiBEaeG7hW4sIFBow7ogRGnhu4VuLCBC4bqvYyBU4burIExpw6ptLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
         <div class="footer-bottom">
@@ -538,13 +546,11 @@
             <i class="fas fa-times close-modal" id="close-modal"></i>
             <h3>THÔNG TIN DỰ ÁN</h3>
             <p>Khám phá hồ sơ năng lực và tài liệu chi tiết về hệ sinh thái Ngự Tâm Holdings.</p>
-            
             <div class="doc-buttons">
                 <a href="#" class="doc-btn"><i class="fas fa-file-powerpoint" style="color: #ff4d4d;"></i> Tải Slide Dự Án (PPT)</a>
                 <a href="#" class="doc-btn"><i class="fas fa-file-pdf" style="color: #ff3333;"></i> Hồ sơ Năng Lực (PDF)</a>
                 <a href="#" class="doc-btn"><i class="fas fa-folder-open" style="color: var(--accent-gold);"></i> Kho Tài liệu Chung</a>
             </div>
-
             <div class="social-icons">
                 <a href="#"><i class="fab fa-facebook"></i></a>
                 <a href="#"><i class="fab fa-youtube"></i></a>
@@ -554,32 +560,37 @@
         </div>
     </div>
 
+    <div class="chatbot-toggler" id="chatbot-toggler">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div class="chatbot-window" id="chatbot-window">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> Ngự Tâm AI</h3>
+            <i class="fas fa-times close-chat" id="close-chat"></i>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="message ai-message">Xin chào! Tôi là AI Tư vấn của Ngự Tâm Holdings. Bạn muốn tìm hiểu về hệ sinh thái hay cần hỗ trợ gì?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Hỏi AI về Ngự Tâm..." autocomplete="off">
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <script>
         // 1. XỬ LÝ RÈM KÉO (TIMING CINEMATIC)
         const introScreen = document.getElementById('intro-screen');
         const openCurtainBtn = document.getElementById('open-curtain-btn');
 
         openCurtainBtn.addEventListener('click', () => {
-            // Vô hiệu hóa nút tránh click nhiều lần
             openCurtainBtn.style.pointerEvents = 'none';
-
-            // Bước 1: Kích hoạt kéo rèm dồn vào 2 mép (diễn ra trong 3.5s)
             introScreen.classList.add('opening');
-            
-            // Bước 2: Đợi 2s (khi rèm đã kéo được hơn một nửa), tung ánh sáng chớp (Flash)
-            setTimeout(() => {
-                introScreen.classList.add('flashing');
-            }, 2000); 
-
-            // Bước 3: Đợi 3s (lúc ánh sáng chớp rực nhất), làm mờ toàn bộ màn hình chờ để lộ dần trang web ở dưới
-            setTimeout(() => {
-                introScreen.classList.add('fading-out');
-            }, 3000);
-
-            // Bước 4: Chờ hoàn tất toàn bộ chu trình (4.5s), gỡ màn hình chờ khỏi hệ thống DOM
+            setTimeout(() => { introScreen.classList.add('flashing'); }, 2000); 
+            setTimeout(() => { introScreen.classList.add('fading-out'); }, 3000);
             setTimeout(() => {
                 introScreen.style.display = 'none';
-                reveal(); // Nạp hiệu ứng cuộn trang ngay lập tức
+                reveal(); 
             }, 4500); 
         });
 
@@ -645,6 +656,96 @@
 
         window.addEventListener('click', (e) => {
             if (e.target === modal) { modal.classList.remove('active'); }
+        });
+
+        // 5. XỬ LÝ CHATBOT GEMINI AI
+        const chatbotToggler = document.getElementById('chatbot-toggler');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const closeChat = document.getElementById('close-chat');
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Bật/tắt cửa sổ chat
+        chatbotToggler.addEventListener('click', () => chatbotWindow.classList.toggle('active'));
+        closeChat.addEventListener('click', () => chatbotWindow.classList.remove('active'));
+
+        // Hàm tạo tin nhắn trên giao diện
+        const createMessageElement = (message, className) => {
+            const div = document.createElement('div');
+            div.classList.add('message', className);
+            // Thay thế \n bằng thẻ <br> để xuống dòng
+            div.innerHTML = message.replace(/\n/g, '<br>');
+            return div;
+        }
+
+        // CẤU HÌNH GEMINI API
+        const API_KEY = "AIzaSyC4Nr62UqoL7JStvEeQFTic_vSPTVBrOxk"; // API KEY CỦA BẠN
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
+
+        // Prompt hệ thống để định hướng AI (System Instruction)
+        const systemPrompt = "Bạn là trợ lý AI ảo của Ngự Tâm Holdings. Bạn tư vấn lịch sự, chuyên nghiệp. Ngự Tâm là hệ sinh thái gồm 7 trụ cột: Ngự Mộc Market, Restaurant & Thiền Trà, Wellness Center, Academy, Travel & Living, Mobility & Logistic, và Media & Technology. Luôn trả lời ngắn gọn, súc tích và tập trung vào các dịch vụ chăm sóc sức khỏe, thân - tâm - trí.";
+
+       const generateResponse = async (userMessage) => {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [
+                            { role: "user", parts: [{ text: systemPrompt + "\n\nCâu hỏi của khách: " + userMessage }] }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                
+                // KIỂM TRA LỖI TỪ GOOGLE TRẢ VỀ
+                if (!response.ok) {
+                    console.error("Chi tiết lỗi từ Google API:", data);
+                    throw new Error(data.error?.message || "Lỗi kết nối API");
+                }
+                
+                // Lấy kết quả text nếu thành công
+                const apiResponseText = data.candidates[0].content.parts[0].text;
+                
+                // Cập nhật giao diện
+                document.querySelector('.ai-loading').remove();
+                chatBody.appendChild(createMessageElement(apiResponseText, 'ai-message'));
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+            } catch (error) {
+                document.querySelector('.ai-loading').remove();
+                console.error("Lỗi hệ thống:", error);
+                
+                // In thẳng lỗi thật ra khung chat để bạn dễ sửa
+                chatBody.appendChild(createMessageElement(`Lỗi hệ thống: ${error.message}`, 'ai-message'));
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+        }
+
+        const handleChat = () => {
+            const userMessage = chatInput.value.trim();
+            if(!userMessage) return;
+
+            // Xóa input & In tin nhắn user
+            chatInput.value = "";
+            chatBody.appendChild(createMessageElement(userMessage, 'user-message'));
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Hiện loading của AI
+            const loadingMsg = createMessageElement("AI đang suy nghĩ...", 'ai-message');
+            loadingMsg.classList.add('ai-loading');
+            chatBody.appendChild(loadingMsg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Gọi API
+            generateResponse(userMessage);
+        }
+
+        sendBtn.addEventListener('click', handleChat);
+        chatInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') handleChat();
         });
     </script>
 </body>
